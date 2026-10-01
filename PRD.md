@@ -193,14 +193,23 @@ Provider output passes through additive layers. Raw data is never rewritten; eac
 
 Sized on `docs/samples/xh9D0oLxwQg.elevenlabs.srt.txt` (56 min, 2 speakers). Thresholds live in a settings row and are re-derived as samples accumulate; they are not constants in code.
 
-1. **Merge** consecutive same-speaker segments when the gap ≤ 4 s. A turn ends only when the other speaker holds the floor. Sample: 941 segments → 893 turns. *(The file has 942 speaker tags; the sizing probe probably dropped one block — see rule 6. Re-measure in M2.)*
-2. **Backchannel**: duration < 2 s, ≤ 6 words, no `?`. Flagged, kept, never a move. Sample: 256 of 893.
-3. **Bridge**: if speaker A's turn is followed only by B backchannels and then A again within 8 s, that is one A turn. Sample: 893 → 518 substantive turns (258 vs 260, talk time within 7%).
+1. **Merge** consecutive same-speaker segments when the gap ≤ 4 s. A turn ends only when the other speaker holds the floor. Sample: 942 segments → 891 turns. Audio events (e.g. `[laughs]`) are not words and never form a turn, so a segment holding only an audio event drops out and its neighbours can merge.
+2. **Backchannel**: duration < 2 s, ≤ 6 alphabetic words, no `?`. Flagged, kept, never a move. Sample: 254 of 891.
+3. **Bridge**: if speaker A's turn is followed only by backchannels and then A again within 8 s, that is one A turn (this also rejoins two directly adjacent A turns, so splitting them needs both thresholds lowered). Sample: 518 substantive turns.
 4. **Interrupted**: a segment starting with `...` or ending mid-word or with `-` marks the turn `interrupted: true`. Diarization is least reliable in overlap, so interrupted turns carry lower default confidence into tagging.
 5. **Fillers** (`um`, `uh`, repeated starts; 2.5% of words): stripped for display and for the classifier prompt, never from `transcript_words`. Stripping is a view, not a mutation.
 6. **Final block.** The last block of an SRT-style export has no trailing blank line; a parser that requires one drops it silently (found on video 3, where the dropped block held the only stage-2 completion in the corpus). Parse on block start, not block end, and assert `segments == count of speaker tags`.
 
 Sample distribution: median turn 15 words / 3.3 s, 12 turns over 80 words, max 68 s; argument content starts at 55 s (first turn > 40 words).
+
+**Measured by `Topoi.Transcripts.Normalize` (2026-10-01, default settings).** The sizing probe reported 941 / 893 / 256 / 518 for the first sample: it dropped the final block (rule 6) and counted the one audio-only segment as a turn.
+
+| sample | segments | turns before bridging | backchannel | substantive |
+|---|---|---|---|---|
+| xh9D0oLxwQg | 942 | 891 | 254 | 518 |
+| RwoZn83IHgo | 590 | 553 | 222 | 189 |
+| UaC-gqcT7JI | 155 | 131 | 43 | 63 |
+| cPVtaKPLC9Q | 804 | 744 | 210 | 436 |
 
 ### 9.2 Speaker labels and participants
 
@@ -516,6 +525,8 @@ Consequences recorded at the time: ingest v1 is one Req call; the transcript sch
 **First API test (2026-10-01).** `BUm39a7diTU` ("Redeemed Zoomer + JesusandWhatnot", 89.5 min), `scribe_v2`, `source_url`, `diarize`, word timestamps, no keyterms. Attempt 1: 400, "Failed to download the file from the provided URL (upstream status 400)", returned in 0 s. Attempt 2, identical: 200 in 82 s, synchronous. 18,196 words, 2 speakers (10,521 / 7,675 words), 20 audio events, `eng` p = 0.99, `transcription_id` `gpMmyvnowJ2sXf1pvP1Z`. The opening line names both participants, but the handle of the other speaker, Redeemed Zoomer (`speaker_0`, who opens the video), came back as a similar-sounding personal name. Jesus and Whatnot is `speaker_1`. The API key is restricted: `GET /v1/models` returns `missing_permissions`; speech-to-text is permitted. Raw JSON kept locally at `tmp/elevenlabs/BUm39a7diTU.json` (gitignored).
 
 The web app's YouTube tab exposes the same options as the API: tag audio events (`tag_audio_events`), include subtitles (`additional_formats`), no verbatim (`no_verbatim`), assign speakers from library (`use_speaker_library`; not used, §3), keyterms (`keyterms`).
+
+**Second API test (2026-10-01).** `UaC-gqcT7JI` (18.6 min) through the app's ingest worker with keyterms from the expected debater's record: accepted on the first attempt; `keyterms` sent as repeated multipart fields. 3,773 words; "actus purus" transcribed correctly three times.
 
 Other samples measured later the same day: `RwoZn83IHgo` (590 segments, 3 labels, one used once), `UaC-gqcT7JI` (155 segments, 2 labels), `cPVtaKPLC9Q` (804 segments, 5 labels for 4 people).
 

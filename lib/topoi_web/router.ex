@@ -48,7 +48,11 @@ defmodule TopoiWeb.Router do
         {TopoiWeb.UserAuth, :require_admin}
       ] do
       live "/", OverviewLive, :index
+      live "/debates", DebatesLive, :index
+      live "/debates/:id", DebateLive, :show
+      live "/debaters", DebatersLive, :index
       live "/gateway", GatewayLive, :index
+      live "/settings", SettingsLive, :index
     end
   end
 

@@ -49,6 +49,16 @@ config :phoenix_live_view,
 # at the `config/runtime.exs`.
 config :topoi, Topoi.Mailer, adapter: Swoosh.Adapters.Local
 
+# Repo uses pgvector types alongside the Postgres defaults.
+config :topoi, Topoi.Repo, types: Topoi.PostgrexTypes
+
+# Background pipeline (PRD §8). Queue concurrency follows the stage map.
+config :topoi, Oban,
+  engine: Oban.Engines.Basic,
+  repo: Topoi.Repo,
+  queues: [ingest: 2, normalize: 1],
+  plugins: [{Oban.Plugins.Pruner, max_age: 60 * 60 * 24 * 7}]
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",

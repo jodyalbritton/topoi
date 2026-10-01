@@ -4,7 +4,7 @@ defmodule TopoiWeb.Admin.AdminAccessTest do
   import Phoenix.LiveViewTest
   import Topoi.AccountsFixtures
 
-  for path <- ["/admin", "/admin/gateway"] do
+  for path <- ["/admin", "/admin/gateway", "/admin/settings", "/admin/debates", "/admin/debaters"] do
     test "#{path} sends anonymous visitors to log in", %{conn: conn} do
       assert {:error, {:redirect, %{to: "/users/log-in"}}} = live(conn, unquote(path))
     end

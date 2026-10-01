@@ -10,6 +10,8 @@ defmodule Topoi.Application do
     children = [
       TopoiWeb.Telemetry,
       Topoi.Repo,
+      Topoi.Vault,
+      {Oban, Application.fetch_env!(:topoi, Oban)},
       {DNSCluster, query: Application.get_env(:topoi, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Topoi.PubSub},
       # Start a worker by calling: Topoi.Worker.start_link(arg)

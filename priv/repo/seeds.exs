@@ -8,8 +8,9 @@
 # The password is random and printed once to whoever runs this script; it is
 # never stored in the repo. Change it at /users/settings after logging in.
 #
-# Seeds no integration settings: the Airo gateway is configured at
-# /admin/gateway, never baked into the repo.
+# Integration settings live in encrypted rows edited at /admin/settings and
+# /admin/gateway. The one exception: if config/dev.secret.exs carries an
+# ElevenLabs key and no key is saved yet, it is copied into the row once.
 
 if Mix.env() == :dev do
   alias Topoi.{Accounts, Repo}
@@ -36,5 +37,24 @@ if Mix.env() == :dev do
 
     %User{} ->
       IO.puts("• Dev user #{username} already exists; skipping")
+  end
+end
+
+if Mix.env() == :dev do
+  alias Topoi.Settings
+  alias Topoi.Settings.ElevenLabs
+
+  dev_key = Application.get_env(:topoi, Topoi.Transcripts.ElevenLabs, [])[:api_key]
+
+  cond do
+    ElevenLabs.configured?(Settings.get(ElevenLabs)) ->
+      IO.puts("• ElevenLabs key already saved; skipping")
+
+    is_binary(dev_key) ->
+      {:ok, _} = Settings.update(ElevenLabs, %{api_key: dev_key})
+      IO.puts("✓ Copied the ElevenLabs key from config/dev.secret.exs into settings")
+
+    true ->
+      IO.puts("• No ElevenLabs key in config/dev.secret.exs; set one at /admin/settings")
   end
 end

@@ -42,3 +42,25 @@ config :phoenix_live_view,
 # Sort query params output of verified routes for robust url comparisons
 config :phoenix,
   sort_verified_routes_query_params: true
+
+# Oban jobs are enqueued but not run; tests drive them with Oban.Testing.
+config :topoi, Oban, testing: :manual
+
+# Static test key for encrypted columns. Not a secret.
+config :topoi, Topoi.Vault,
+  ciphers: [
+    default:
+      {Cloak.Ciphers.AES.GCM,
+       tag: "AES.GCM.V1",
+       key: Base.decode64!("dGVzdC1rZXktdGVzdC1rZXktdGVzdC1rZXktdGVzdCE="),
+       iv_length: 12}
+  ]
+
+# External HTTP goes to Req.Test stubs in tests; no network.
+config :topoi, Topoi.Transcripts.ElevenLabs,
+  req_options: [plug: {Req.Test, Topoi.Transcripts.ElevenLabs}]
+
+config :topoi, Topoi.Metadata, req_options: [plug: {Req.Test, Topoi.Metadata}]
+
+config :topoi, Topoi.Ingest.Canonicalize,
+  req_options: [plug: {Req.Test, Topoi.Ingest.Canonicalize}]

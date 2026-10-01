@@ -37,6 +37,12 @@ defmodule TopoiWeb.DesignManifest do
   # domain-specific ones in their own module (e.g.
   # `TopoiWeb.ChatComponents`).
 
+  component(CompositeComponents, :checkbox_group,
+    category: :composite,
+    summary: "Several checkboxes posting one list; for picking a few items from a short list.",
+    preview: &DesignPreviews.checkbox_group_preview/1
+  )
+
   component(CompositeComponents, :empty_state,
     category: :composite,
     summary: "Centered icon + title + optional action; fills empty containers.",
@@ -80,6 +86,13 @@ defmodule TopoiWeb.DesignManifest do
   )
 
   # -------------------------------------------------------------------- domain
+
+  component(TopoiWeb.VideoComponents, :status_badge,
+    category: :domain,
+    summary:
+      "A video's pipeline status in plain words (queued, transcribing, turns ready, failed).",
+    preview: &DesignPreviews.status_badge_preview/1
+  )
 
   component(TopoiWeb.DebateComponents, :timecode,
     category: :domain,

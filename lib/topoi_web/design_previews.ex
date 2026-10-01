@@ -28,6 +28,17 @@ defmodule TopoiWeb.DesignPreviews do
   alias JobyKit.CoreComponents
   alias TopoiWeb.CompositeComponents
 
+  def checkbox_group_preview(assigns) do
+    ~H"""
+    <CompositeComponents.checkbox_group
+      name="preview[ids]"
+      label="Expected debaters"
+      options={[{"Debater A", "a"}, {"Debater B", "b"}]}
+      selected={["a"]}
+    />
+    """
+  end
+
   def empty_state_preview(assigns) do
     ~H"""
     <div class="grid gap-4 sm:grid-cols-2">
@@ -103,6 +114,17 @@ defmodule TopoiWeb.DesignPreviews do
           AI gateway
         </SiteComponents.nav_link>
       </div>
+    </div>
+    """
+  end
+
+  def status_badge_preview(assigns) do
+    ~H"""
+    <div class="flex flex-wrap gap-2">
+      <TopoiWeb.VideoComponents.status_badge
+        :for={s <- ~w(submitted transcribing transcribed normalized failed)}
+        status={s}
+      />
     </div>
     """
   end

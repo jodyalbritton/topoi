@@ -30,6 +30,50 @@ defmodule TopoiWeb.CompositeComponents do
   alias JobyKit.CoreComponents
 
   @doc """
+  A group of checkboxes posting a list under one name (`name[]`), for
+  choosing several items from a short list. An empty hidden value keeps
+  the key present when nothing is checked.
+
+      <.checkbox_group name="link[debater_ids]" label="Expected debaters"
+        options={[{"Name", id}]} selected={[id]} />
+  """
+  attr :name, :string, required: true, doc: "Field name without the trailing []."
+  attr :label, :string, required: true
+  attr :options, :list, required: true, doc: "`{label, value}` tuples."
+  attr :selected, :list, default: []
+  attr :empty, :string, default: "Nothing to choose yet."
+  attr :rest, :global
+
+  def checkbox_group(assigns) do
+    assigns = assign(assigns, :selected, Enum.map(assigns.selected, &to_string/1))
+
+    ~H"""
+    <fieldset data-component="TopoiWeb.CompositeComponents.checkbox_group" class="fieldset" {@rest}>
+      <legend class="fieldset-legend">{@label}</legend>
+      <input type="hidden" name={@name <> "[]"} value="" />
+      <TopoiWeb.SiteComponents.empty_line :if={@options == []}>
+        {@empty}
+      </TopoiWeb.SiteComponents.empty_line>
+      <div class="flex flex-wrap gap-x-6 gap-y-2">
+        <label
+          :for={{label, value} <- @options}
+          class="flex cursor-pointer items-center gap-2 text-sm"
+        >
+          <input
+            type="checkbox"
+            name={@name <> "[]"}
+            value={value}
+            checked={to_string(value) in @selected}
+            class="checkbox checkbox-sm"
+          />
+          {label}
+        </label>
+      </div>
+    </fieldset>
+    """
+  end
+
+  @doc """
   An empty-state callout: centered icon, title, supporting text, and an
   optional action slot. Use to fill an otherwise-empty container — an
   unfilled list, a search with no results, a fresh dashboard.

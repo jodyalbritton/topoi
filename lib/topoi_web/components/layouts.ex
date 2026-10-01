@@ -121,7 +121,10 @@ defmodule TopoiWeb.Layouts do
 
   @admin_nav [
     {"overview", "Overview", "/admin", "hero-home"},
-    {"gateway", "AI gateway", "/admin/gateway", "hero-cpu-chip"}
+    {"debates", "Debates", "/admin/debates", "hero-play-circle"},
+    {"debaters", "Debaters", "/admin/debaters", "hero-user-group"},
+    {"gateway", "AI gateway", "/admin/gateway", "hero-cpu-chip"},
+    {"settings", "Settings", "/admin/settings", "hero-adjustments-horizontal"}
   ]
 
   attr :flash, :map, required: true
@@ -180,7 +183,7 @@ defmodule TopoiWeb.Layouts do
       </aside>
 
       <main class="min-w-0">
-        <div class="mx-auto w-full max-w-5xl px-4 py-8 sm:px-8">
+        <div class="w-full max-w-5xl px-4 py-8 sm:px-8">
           {render_slot(@inner_block)}
         </div>
       </main>

@@ -40,6 +40,18 @@ if config_env() == :dev do
 end
 
 if config_env() == :prod do
+  # Master key for encrypted settings columns. It must live outside the
+  # database it protects, so it is the one secret read from the environment.
+  cloak_key =
+    System.get_env("CLOAK_KEY") ||
+      raise "environment variable CLOAK_KEY is missing (base64 of 32 random bytes)"
+
+  config :topoi, Topoi.Vault,
+    ciphers: [
+      default:
+        {Cloak.Ciphers.AES.GCM, tag: "AES.GCM.V1", key: Base.decode64!(cloak_key), iv_length: 12}
+    ]
+
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """

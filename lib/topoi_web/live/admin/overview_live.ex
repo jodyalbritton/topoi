@@ -5,24 +5,25 @@ defmodule TopoiWeb.Admin.OverviewLive do
   """
   use TopoiWeb, :live_view
 
-  alias TopoiWeb.CompositeComponents
-
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, page_title: "Admin", setup: setup_rows())}
+    counts =
+      Topoi.Videos.list_videos() |> Enum.frequencies_by(& &1.status)
+
+    {:ok, assign(socket, page_title: "Admin", setup: setup_rows(), counts: counts)}
   end
 
   defp setup_rows do
     elevenlabs? =
-      is_binary(Application.get_env(:topoi, Topoi.Transcripts.ElevenLabs, [])[:api_key])
+      Topoi.Settings.ElevenLabs.configured?(Topoi.Settings.get(Topoi.Settings.ElevenLabs))
 
     [
       %{
         title: "Transcription",
         detail: "ElevenLabs speech-to-text.",
         ok: elevenlabs?,
-        status: if(elevenlabs?, do: "Key present", else: "No key"),
-        path: nil
+        status: if(elevenlabs?, do: "Key saved", else: "No key"),
+        path: ~p"/admin/settings"
       },
       %{
         title: "AI gateway",
@@ -70,9 +71,16 @@ defmodule TopoiWeb.Admin.OverviewLive do
 
         <section aria-labelledby="debates-heading" class="space-y-3">
           <.header id="debates-heading" level="h2">Debates</.header>
-          <CompositeComponents.empty_state icon="hero-play-circle" title="No debates ingested yet">
-            Submitted videos appear here with the status of each pipeline stage.
-          </CompositeComponents.empty_state>
+          <TopoiWeb.SiteComponents.empty_line :if={@counts == %{}}>
+            No debates yet. <.link navigate={~p"/admin/debates"} class="link">Add one</.link>.
+          </TopoiWeb.SiteComponents.empty_line>
+          <p :if={@counts != %{}} class="flex flex-wrap items-center gap-3 text-sm">
+            <span :for={{status, n} <- @counts} class="flex items-center gap-1.5">
+              <TopoiWeb.VideoComponents.status_badge status={status} />
+              <span class="tabular">{n}</span>
+            </span>
+            <.link navigate={~p"/admin/debates"} class="link">All debates</.link>
+          </p>
         </section>
       </div>
     </Layouts.admin>

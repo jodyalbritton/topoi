@@ -76,5 +76,16 @@ config :phoenix_live_view,
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 
+# Fallback key for encrypted columns so a fresh clone boots. Not a secret:
+# config/dev.secret.exs overrides it with a random local key.
+config :topoi, Topoi.Vault,
+  ciphers: [
+    default:
+      {Cloak.Ciphers.AES.GCM,
+       tag: "AES.GCM.V1",
+       key: Base.decode64!("ZGV2LWtleS1kZXYta2V5LWRldi1rZXktZGV2LWtleTE="),
+       iv_length: 12}
+  ]
+
 # Local secrets (gitignored). Optional so a fresh clone still boots.
 if File.exists?(Path.join(__DIR__, "dev.secret.exs")), do: import_config("dev.secret.exs")
