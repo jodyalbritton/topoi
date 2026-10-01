@@ -6,7 +6,7 @@ defmodule Topoi.Videos.Video do
   use Topoi.Schema
 
   @platforms ~w(youtube tiktok none)
-  @statuses ~w(submitted transcribing transcribed normalized failed)
+  @statuses ~w(submitted transcribing transcribed normalized speakers_suggested speakers_confirmed failed)
   @formats ~w(tiktok_live youtube_live moderated_formal podcast monologue)
   @channels ~w(debater opponent third_party unknown)
 

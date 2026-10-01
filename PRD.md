@@ -88,6 +88,7 @@ Corpus size is small by design: one debater ≈ 10–60 videos. Rates are shown 
 - **Count all offers, not just instances.** "Avoids X" only means something against a census of every time X was offered.
 - **Perceived winner is out of scope as ground truth.** Comment analysis is deferred (§15, Appendix E) until a de-biasing scheme is tested; it never feeds pattern claims before then.
 - **Identity merge** — the same debater across channels and handle variants, and diarization labels → people — is a launch-blocking correctness concern. Detectors run only over human-confirmed participant maps (Gate A).
+- **Speaker labels are the exception (Gate A is a form).** Who is talking, their role, and their side are plain facts and must not wait on the model. Gate A is a form, one block per speaker label, pre-filled from suggestions with a one-line reason under each answer; the person confirming keeps or changes any answer, may type a name for someone without a debater record, may mark two labels as the same person, or may answer "can't tell". Who confirmed, and when, is recorded. Everything else below stays suggest-then-confirm.
 - **Suggest, then confirm; never author.** Every label in the record (speaker names and merges, positions, schools, topics, moves, tags, opponent clusters) is suggested by the system with its evidence (a quote and a timecode, or the counts behind it), and a human confirms or rejects it. A rejection is logged with its reason. No one types a label from scratch, because that is where bias enters. Two consequences: a debater who never states a school on the record has no school, however obvious it seems; and the only authored content is the private counter library (§5), which is never published.
 - **The LLM proposes, the code counts, a human confirms.** No published sentence is LLM prose; every row is a query result with span citations, and prose is generated last from rows, each sentence bound to its row.
 
@@ -266,6 +267,8 @@ All via `AiroClient.chat/2` with `response_format: json_schema`; `model` and `pr
 3. **Pushback judge.** In: the trigger turn, the K following turns, the challenged participant. Out: `{behavior, completed, quote, reason}`. Check: `quote` ⊂ one of the K turns.
 4. **Argument naming** (cheap, advisory): names cross-video arguments; a human can rename.
 
+**Participant map in practice (`participants-v4`, 2026-10-01).** The window is the first five minutes plus the first three substantive turns of every label that starts later (formal opponents and timekeepers often do). Quotes may come from a transcript line or the "Video title:"/"Channel:" header; an excerpt stitched with "…" counts only if every piece is found. Code adds what the model cannot see: candidate debater links from expected debaters and the channel name, channel of record, and handoff merge hints (§9.2). The model is never shown debater records.
+
 ## 11. Findings
 
 ### 11.1 Debater aggregate
@@ -329,7 +332,7 @@ Re-tagging corrections use `supersedes_id` + `dedup_key` (mem_pal pattern).
 
 Only three human gates. Everything else runs unattended.
 
-- **Gate A — participant map** (≈ 30 s per video): the one place diarization errors are caught. Also where `published_at` is entered for YouTube videos while no Data API key exists (§7).
+- **Gate A — participant map** (≈ 30 s per video): the one place diarization errors are caught. A form per speaker label (who, role, side) plus the debate's format, channel of record, and publish date, pre-filled from suggestions; "Confirm speakers" checks it (one debater is one person unless two labels are "the same person") and says what to fix. Also where `published_at` is entered for YouTube videos while no Data API key exists (§7).
 - **Gate B — review queue**: `contested`, `confidence < τ`, and every `silence`; expected 5–15 items per hour of video. Accepted items become `gold_tags`. The first video of every new debater is reviewed in full. If volume stays above ~20 items/hour after ten videos, the vocabulary or the rubric is wrong, not the reviewer.
 - **Gate C — publish**: debater-page gate, span check, scope rule, reviewer sign-off. Nothing publishes on a timer.
 
@@ -569,4 +572,5 @@ Apache AGE rejected: for PG17 it is at 1.7.0-rc0 (2026-02-11); 1.8.0 has not rea
 | 2026-10-01 | Videos are canonical: identity is `(platform, platform_video_id)`, submit is idempotent, and a video is sent to ElevenLabs once regardless of how many debaters appear in it (§8.1). |
 | 2026-10-01 | ElevenLabs API verified on `BUm39a7diTU`. Requests carry keyterms built from expected debaters' names, aliases, and terms plus school vocabulary; `no_verbatim` fixed off; synchronous call by default, webhook as fallback; transient upstream-download 400s retried (§8.2). |
 | 2026-10-01 | No voice prints or speaker biometrics of any kind (enrollment, embeddings, ElevenLabs speaker library, Speaches known speakers): debaters have not consented. Identity comes from the record plus Gate A (§3, §9.2). Personal names are kept out of this document; they may appear in transcripts. |
+| 2026-10-01 | Gate A becomes a form: speaker labels (who, role, side) are set directly by a person, pre-filled from suggestions with their reasons; names may be typed for people without a debater record; "same person as" replaces merge decisions. Chosen after the suggestion-card flow proved unclear in use. Other labels stay suggest-then-confirm. |
 | 2026-10-01 | Start without a YouTube Data API key: metadata from oEmbed + ElevenLabs; YouTube `published_at` entered at Gate A until a key is added before M3 (§7). |

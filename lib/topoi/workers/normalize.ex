@@ -10,6 +10,12 @@ defmodule Topoi.Workers.Normalize do
     case Repo.get(Transcript, id) do
       %Transcript{status: "received"} = t ->
         {:ok, _stats} = Normalize.run(t)
+
+        # Stage 3 needs the AI gateway; without it the video waits at
+        # "Turns ready" and can be proposed later from the admin page.
+        if Topoi.AI.Gateway.configured?(),
+          do: {:ok, _} = Oban.insert(Topoi.Workers.Participants.new(%{transcript_id: t.id}))
+
         :ok
 
       _ ->

@@ -38,12 +38,9 @@ defmodule TopoiWeb.HomeLive do
           <section :for={section <- @sections} aria-label={section.title}>
             <div class="flex items-baseline justify-between border-b border-base-300 pb-2">
               <h2 class="font-semibold">{section.title}</h2>
-              <.link
-                navigate={section.path}
-                class="text-sm text-base-content/60 hover:text-base-content"
-              >
+              <TopoiWeb.SiteComponents.quiet_link navigate={section.path}>
                 All
-              </.link>
+              </TopoiWeb.SiteComponents.quiet_link>
             </div>
             <SiteComponents.empty_line :if={section.items == []}>
               None published yet.

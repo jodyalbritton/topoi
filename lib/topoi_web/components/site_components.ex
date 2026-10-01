@@ -129,6 +129,40 @@ defmodule TopoiWeb.SiteComponents do
     """
   end
 
+  @doc "Secondary text: a detail or note beside primary content."
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def secondary_text(assigns) do
+    ~H"""
+    <span
+      data-component="TopoiWeb.SiteComponents.secondary_text"
+      class="text-sm text-base-content/70"
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </span>
+    """
+  end
+
+  @doc "A muted secondary link (back links, \"All\" links)."
+  attr :navigate, :string, required: true
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def quiet_link(assigns) do
+    ~H"""
+    <.link
+      data-component="TopoiWeb.SiteComponents.quiet_link"
+      navigate={@navigate}
+      class="text-sm text-base-content/60 hover:text-base-content"
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </.link>
+    """
+  end
+
   @doc """
   A one-line empty state: muted text, no icon, no box. For lists that
   have nothing in them yet.

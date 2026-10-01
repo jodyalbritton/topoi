@@ -14,7 +14,7 @@ defmodule TopoiWeb.DebateComponents do
   """
   attr :ms, :integer, required: true, doc: "Offset into the video in milliseconds."
   attr :href, :string, default: nil
-  attr :rest, :global
+  attr :rest, :global, include: ~w(target rel)
 
   def timecode(assigns) do
     assigns = assign(assigns, :label, format_ms(assigns.ms))
@@ -44,13 +44,7 @@ defmodule TopoiWeb.DebateComponents do
   @doc """
   Formats a millisecond offset as `m:ss` or `h:mm:ss`.
   """
-  def format_ms(ms) when is_integer(ms) and ms >= 0 do
-    total = div(ms, 1000)
-    {h, m, s} = {div(total, 3600), div(rem(total, 3600), 60), rem(total, 60)}
-    pad = &String.pad_leading(Integer.to_string(&1), 2, "0")
-
-    if h > 0, do: "#{h}:#{pad.(m)}:#{pad.(s)}", else: "#{m}:#{pad.(s)}"
-  end
+  defdelegate format_ms(ms), to: Topoi.Format, as: :clock
 
   @doc """
   The timeline strip: one lane per participant, argument lines drawn as

@@ -14,6 +14,10 @@ defmodule Topoi.Videos.Participant do
     field :confidence, :float
     field :evidence_quote, :string
     field :confirmed_by_user, :boolean, default: false
+    field :display_name, :string
+    field :unidentified, :boolean, default: false
+    field :confirmed_at, :utc_datetime
+    belongs_to :confirmed_by, Topoi.Accounts.User
 
     belongs_to :video, Topoi.Videos.Video
     belongs_to :debater, Topoi.Debaters.Debater

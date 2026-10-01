@@ -74,6 +74,8 @@ defmodule Topoi.MixProject do
       {:cloak, "~> 1.1"},
       {:cloak_ecto, "~> 1.3"},
       {:pgvector, "~> 0.3"},
+      # No Hex release; `main` is prod (PRD §7).
+      {:airo_client, git: "git@github.com:JobyCorp/airo_client.git", branch: "main"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 1.0"},

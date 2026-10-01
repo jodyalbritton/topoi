@@ -11,6 +11,10 @@ defmodule Topoi.Videos do
   @doc "Subscribe to `{:video_updated, video_id}` messages."
   def subscribe, do: Phoenix.PubSub.subscribe(Topoi.PubSub, @topic)
 
+  @doc "Tells subscribers a video changed (for changes made outside this module)."
+  def notify(video_id),
+    do: Phoenix.PubSub.broadcast(Topoi.PubSub, @topic, {:video_updated, video_id})
+
   defp broadcast({:ok, %Video{id: id}} = result) do
     Phoenix.PubSub.broadcast(Topoi.PubSub, @topic, {:video_updated, id})
     result
@@ -20,6 +24,16 @@ defmodule Topoi.Videos do
 
   def list_videos do
     Repo.all(from v in Video, order_by: [desc: v.inserted_at], preload: :debaters)
+  end
+
+  @doc "The oldest debate, other than `except_id`, whose speakers need review."
+  def next_needing_review(except_id) do
+    Repo.one(
+      from v in Video,
+        where: v.status == "speakers_suggested" and v.id != ^except_id,
+        order_by: v.inserted_at,
+        limit: 1
+    )
   end
 
   def get_video!(id), do: Video |> Repo.get!(id) |> Repo.preload(:debaters)
@@ -41,6 +55,11 @@ defmodule Topoi.Videos do
 
   def put_metadata(%Video{} = video, attrs) do
     video |> Video.metadata_changeset(attrs) |> Repo.update() |> broadcast()
+  end
+
+  @doc "Sets the publish date at Gate A while no source provides it (PRD §7)."
+  def set_published_at(%Video{} = video, %DateTime{} = at) do
+    video |> Video.review_changeset(%{published_at: at}) |> Repo.update() |> broadcast()
   end
 
   def set_status(%Video{} = video, status, error \\ nil) do

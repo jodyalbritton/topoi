@@ -40,21 +40,35 @@ defmodule TopoiWeb.Admin.DebateLive do
     <Layouts.admin flash={@flash} current_scope={@current_scope} active_nav="debates">
       <div class="space-y-10">
         <div class="space-y-2">
-          <.link
-            navigate={~p"/admin/debates"}
-            class="text-sm text-base-content/60 hover:text-base-content"
-          >
+          <TopoiWeb.SiteComponents.quiet_link navigate={~p"/admin/debates"}>
             Debates
-          </.link>
+          </TopoiWeb.SiteComponents.quiet_link>
           <.header size="page">
             {@video.title || @video.canonical_url || "Pasted transcript"}
             <:subtitle>
               <span :if={@video.channel_name}>{@video.channel_name}</span>
             </:subtitle>
-            <:actions><VideoComponents.status_badge status={@video.status} /></:actions>
+            <:actions>
+              <div class="flex items-center gap-3">
+                <VideoComponents.status_badge status={@video.status} />
+                <.button
+                  :if={@video.status in ~w(speakers_suggested speakers_confirmed)}
+                  size="sm"
+                  navigate={~p"/admin/debates/#{@video.id}/speakers"}
+                  variant={if @video.status == "speakers_suggested", do: "primary", else: "ghost"}
+                >
+                  Review speakers
+                </.button>
+              </div>
+            </:actions>
           </.header>
           <p :if={@video.last_error} class="text-sm text-error">{@video.last_error}</p>
         </div>
+
+        <TopoiWeb.VideoComponents.pipeline_steps
+          status={@video.status}
+          review_path={~p"/admin/debates/#{@video.id}/speakers"}
+        />
 
         <.list>
           <:item title="Video">

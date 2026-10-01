@@ -56,7 +56,7 @@ config :topoi, Topoi.Repo, types: Topoi.PostgrexTypes
 config :topoi, Oban,
   engine: Oban.Engines.Basic,
   repo: Topoi.Repo,
-  queues: [ingest: 2, normalize: 1],
+  queues: [ingest: 2, normalize: 1, participants: 2],
   plugins: [{Oban.Plugins.Pruner, max_age: 60 * 60 * 24 * 7}]
 
 # Configure esbuild (the version is required)

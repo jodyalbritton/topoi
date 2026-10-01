@@ -64,3 +64,5 @@ config :topoi, Topoi.Metadata, req_options: [plug: {Req.Test, Topoi.Metadata}]
 
 config :topoi, Topoi.Ingest.Canonicalize,
   req_options: [plug: {Req.Test, Topoi.Ingest.Canonicalize}]
+
+config :topoi, Topoi.AI.Gateway, req_options: [plug: {Req.Test, Topoi.AI.Gateway}]

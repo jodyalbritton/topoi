@@ -50,6 +50,7 @@ defmodule TopoiWeb.Router do
       live "/", OverviewLive, :index
       live "/debates", DebatesLive, :index
       live "/debates/:id", DebateLive, :show
+      live "/debates/:id/speakers", SpeakersLive, :show
       live "/debaters", DebatersLive, :index
       live "/gateway", GatewayLive, :index
       live "/settings", SettingsLive, :index

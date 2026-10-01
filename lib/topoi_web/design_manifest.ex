@@ -73,6 +73,18 @@ defmodule TopoiWeb.DesignManifest do
     preview: &DesignPreviews.prose_page_preview/1
   )
 
+  component(TopoiWeb.SiteComponents, :secondary_text,
+    category: :composite,
+    summary: "Secondary text: a detail or note beside primary content.",
+    preview: &DesignPreviews.secondary_text_preview/1
+  )
+
+  component(TopoiWeb.SiteComponents, :quiet_link,
+    category: :composite,
+    summary: "A muted secondary link: back links and \"All\" links.",
+    preview: &DesignPreviews.quiet_link_preview/1
+  )
+
   component(TopoiWeb.SiteComponents, :empty_line,
     category: :composite,
     summary: "One muted line for an empty list; no icon, no box.",
@@ -87,11 +99,25 @@ defmodule TopoiWeb.DesignManifest do
 
   # -------------------------------------------------------------------- domain
 
+  component(TopoiWeb.VideoComponents, :pipeline_steps,
+    category: :domain,
+    summary:
+      "Where a debate is in the pipeline: done, needs review, running, failed, waiting; and what comes next.",
+    preview: &DesignPreviews.pipeline_steps_preview/1
+  )
+
   component(TopoiWeb.VideoComponents, :status_badge,
     category: :domain,
     summary:
       "A video's pipeline status in plain words (queued, transcribing, turns ready, failed).",
     preview: &DesignPreviews.status_badge_preview/1
+  )
+
+  component(TopoiWeb.ReviewComponents, :suggestion_card,
+    category: :domain,
+    summary:
+      "A suggested label with its quoted, timed evidence; confirm, or reject with a reason (Gate A).",
+    preview: &DesignPreviews.suggestion_card_preview/1
   )
 
   component(TopoiWeb.DebateComponents, :timecode,

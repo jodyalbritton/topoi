@@ -93,6 +93,20 @@ defmodule TopoiWeb.DesignPreviews do
     """
   end
 
+  def secondary_text_preview(assigns) do
+    ~H"""
+    <SiteComponents.secondary_text>
+      Airo, for speaker naming and tagging.
+    </SiteComponents.secondary_text>
+    """
+  end
+
+  def quiet_link_preview(assigns) do
+    ~H"""
+    <SiteComponents.quiet_link navigate="#">All</SiteComponents.quiet_link>
+    """
+  end
+
   def empty_line_preview(assigns) do
     ~H"""
     <SiteComponents.empty_line>None published yet.</SiteComponents.empty_line>
@@ -118,6 +132,15 @@ defmodule TopoiWeb.DesignPreviews do
     """
   end
 
+  def pipeline_steps_preview(assigns) do
+    ~H"""
+    <div class="grid gap-6 sm:grid-cols-2">
+      <TopoiWeb.VideoComponents.pipeline_steps status="speakers_suggested" review_path="#" />
+      <TopoiWeb.VideoComponents.pipeline_steps status="speakers_confirmed" />
+    </div>
+    """
+  end
+
   def status_badge_preview(assigns) do
     ~H"""
     <div class="flex flex-wrap gap-2">
@@ -125,6 +148,40 @@ defmodule TopoiWeb.DesignPreviews do
         :for={s <- ~w(submitted transcribing transcribed normalized failed)}
         status={s}
       />
+    </div>
+    """
+  end
+
+  def suggestion_card_preview(assigns) do
+    assigns =
+      assign(assigns,
+        pending: %{
+          id: "preview-1",
+          kind: "identity",
+          value: "guest",
+          stated_name: "Debater A",
+          debater: nil,
+          source: "model",
+          evidence_quote: "today I'm joined by Debater A",
+          evidence_ms: 860,
+          decision: nil
+        },
+        rejected: %{
+          id: "preview-2",
+          kind: "format",
+          value: "podcast",
+          debater: nil,
+          source: "model",
+          evidence_quote: "thank you for coming on the show",
+          evidence_ms: 4000,
+          decision: %{outcome: "rejected", reason: "It is a live stream"}
+        }
+      )
+
+    ~H"""
+    <div class="max-w-xl space-y-3">
+      <TopoiWeb.ReviewComponents.suggestion_card suggestion={@pending} />
+      <TopoiWeb.ReviewComponents.suggestion_card suggestion={@rejected} />
     </div>
     """
   end

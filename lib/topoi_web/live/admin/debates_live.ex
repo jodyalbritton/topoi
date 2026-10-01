@@ -189,7 +189,9 @@ defmodule TopoiWeb.Admin.DebatesLive do
             <:col :let={v} label="Debaters">{Enum.map_join(v.debaters, ", ", & &1.name)}</:col>
             <:col :let={v} label="Status"><VideoComponents.status_badge status={v.status} /></:col>
             <:col :let={v} label="Note">
-              <span class="text-sm text-base-content/70">{v.last_error}</span>
+              <TopoiWeb.SiteComponents.secondary_text>
+                {v.last_error}
+              </TopoiWeb.SiteComponents.secondary_text>
             </:col>
           </.table>
         </section>

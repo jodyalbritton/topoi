@@ -7,15 +7,29 @@ defmodule TopoiWeb.Admin.OverviewLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    counts =
-      Topoi.Videos.list_videos() |> Enum.frequencies_by(& &1.status)
+    if connected?(socket), do: Topoi.Videos.subscribe()
+    {:ok, socket |> assign(page_title: "Admin", setup: setup_rows()) |> load_debates()}
+  end
 
-    {:ok, assign(socket, page_title: "Admin", setup: setup_rows(), counts: counts)}
+  @impl true
+  def handle_info({:video_updated, _}, socket), do: {:noreply, load_debates(socket)}
+
+  defp load_debates(socket) do
+    videos = Topoi.Videos.list_videos()
+
+    needs_review =
+      for v <- videos,
+          v.status == "speakers_suggested",
+          do: {v, Topoi.Review.pending_count(v.id)}
+
+    assign(socket, counts: Enum.frequencies_by(videos, & &1.status), needs_review: needs_review)
   end
 
   defp setup_rows do
     elevenlabs? =
       Topoi.Settings.ElevenLabs.configured?(Topoi.Settings.get(Topoi.Settings.ElevenLabs))
+
+    gateway? = Topoi.Settings.Gateway.configured?(Topoi.Settings.get(Topoi.Settings.Gateway))
 
     [
       %{
@@ -28,8 +42,8 @@ defmodule TopoiWeb.Admin.OverviewLive do
       %{
         title: "AI gateway",
         detail: "Airo, for speaker naming, tagging, and the pushback judge.",
-        ok: false,
-        status: "Not configured",
+        ok: gateway?,
+        status: if(gateway?, do: "Key saved", else: "Not configured"),
         path: ~p"/admin/gateway"
       },
       %{
@@ -58,13 +72,32 @@ defmodule TopoiWeb.Admin.OverviewLive do
               class="grid gap-1 px-4 py-3 sm:grid-cols-[12rem_1fr_auto] sm:items-center sm:gap-4"
             >
               <span class="font-medium">{row.title}</span>
-              <span class="text-sm text-base-content/70">{row.detail}</span>
+              <TopoiWeb.SiteComponents.secondary_text>
+                {row.detail}
+              </TopoiWeb.SiteComponents.secondary_text>
               <span class="flex items-center gap-3">
                 <.badge tone={if row.ok, do: "ok", else: "warn"}>{row.status}</.badge>
                 <.button :if={row.path} navigate={row.path} size="sm" variant="ghost">
                   Configure
                 </.button>
               </span>
+            </li>
+          </ul>
+        </section>
+
+        <section :if={@needs_review != []} aria-labelledby="review-heading" class="space-y-3">
+          <.header id="review-heading" level="h2">Needs review</.header>
+          <ul class="divide-y divide-base-300 rounded-box border border-base-300">
+            <li :for={{video, pending} <- @needs_review}>
+              <.link
+                navigate={~p"/admin/debates/#{video.id}/speakers"}
+                class="flex items-center justify-between gap-4 px-4 py-3 hover:bg-base-200"
+              >
+                <span class="font-medium">{video.title || video.canonical_url}</span>
+                <span class="whitespace-nowrap text-sm text-base-content/70">
+                  <span class="tabular">{pending}</span> speaker suggestions to decide
+                </span>
+              </.link>
             </li>
           </ul>
         </section>
