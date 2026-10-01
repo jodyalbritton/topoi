@@ -19,77 +19,85 @@
   themes: false;
 }
 
-/* daisyUI theme plugin.
-  We ship with two themes, a light one inspired on Phoenix colors and a dark one inspired
-  on Elixir colors. Build your own at: https://daisyui.com/theme-generator/ */
-@plugin "daisyui/packages/bundle/daisyui-theme" {
-  name: "dark";
-  default: false;
-  prefersdark: true;
-  color-scheme: "dark";
-  --color-base-100: oklch(30.33% 0.016 252.42);
-  --color-base-200: oklch(25.26% 0.014 253.1);
-  --color-base-300: oklch(20.15% 0.012 254.09);
-  --color-base-content: oklch(97.807% 0.029 256.847);
-  --color-primary: oklch(58% 0.233 277.117);
-  --color-primary-content: oklch(96% 0.018 272.314);
-  --color-secondary: oklch(58% 0.233 277.117);
-  --color-secondary-content: oklch(96% 0.018 272.314);
-  --color-accent: oklch(60% 0.25 292.717);
-  --color-accent-content: oklch(96% 0.016 293.756);
-  --color-neutral: oklch(37% 0.044 257.287);
-  --color-neutral-content: oklch(98% 0.003 247.858);
-  --color-info: oklch(58% 0.158 241.966);
-  --color-info-content: oklch(97% 0.013 236.62);
-  --color-success: oklch(60% 0.118 184.704);
-  --color-success-content: oklch(98% 0.014 180.72);
-  --color-warning: oklch(66% 0.179 58.318);
-  --color-warning-content: oklch(98% 0.022 95.277);
-  --color-error: oklch(58% 0.253 17.585);
-  --color-error-content: oklch(96% 0.015 12.422);
-  --radius-selector: 0.25rem;
-  --radius-field: 0.25rem;
-  --radius-box: 0.5rem;
-  --size-selector: 0.21875rem;
-  --size-field: 0.21875rem;
-  --border: 1.5px;
-  --depth: 1;
-  --noise: 0;
-}
-
+/* Topoi themes. Palette (see PRD §13 and the design notes in
+   TopoiWeb.Layouts): porcelain base, ink text, verdigris primary,
+   plum as the second debate lane, ochre reserved for unanswered
+   pushback. Neither debate lane may read as "the good side". */
 @plugin "daisyui/packages/bundle/daisyui-theme" {
   name: "light";
   default: true;
   prefersdark: false;
   color-scheme: "light";
-  --color-base-100: oklch(98% 0 0);
-  --color-base-200: oklch(96% 0.001 286.375);
-  --color-base-300: oklch(92% 0.004 286.32);
-  --color-base-content: oklch(21% 0.006 285.885);
-  --color-primary: oklch(70% 0.213 47.604);
-  --color-primary-content: oklch(98% 0.016 73.684);
-  --color-secondary: oklch(55% 0.027 264.364);
-  --color-secondary-content: oklch(98% 0.002 247.839);
-  --color-accent: oklch(0% 0 0);
-  --color-accent-content: oklch(100% 0 0);
-  --color-neutral: oklch(44% 0.017 285.786);
-  --color-neutral-content: oklch(98% 0 0);
-  --color-info: oklch(62% 0.214 259.815);
-  --color-info-content: oklch(97% 0.014 254.604);
-  --color-success: oklch(70% 0.14 182.503);
-  --color-success-content: oklch(98% 0.014 180.72);
-  --color-warning: oklch(66% 0.179 58.318);
-  --color-warning-content: oklch(98% 0.022 95.277);
-  --color-error: oklch(58% 0.253 17.585);
-  --color-error-content: oklch(96% 0.015 12.422);
-  --radius-selector: 0.25rem;
-  --radius-field: 0.25rem;
-  --radius-box: 0.5rem;
-  --size-selector: 0.21875rem;
-  --size-field: 0.21875rem;
-  --border: 1.5px;
-  --depth: 1;
+  --color-base-100: #F5F7F4;
+  --color-base-200: #ECEFEB;
+  --color-base-300: #DCE1DB;
+  --color-base-content: #1A2420;
+  --color-primary: #24786C;
+  --color-primary-content: #F5F7F4;
+  --color-secondary: #74508A;
+  --color-secondary-content: #F7F2FA;
+  --color-accent: #C08A1E;
+  --color-accent-content: #1A2420;
+  --color-neutral: #2B3833;
+  --color-neutral-content: #F5F7F4;
+  --color-info: #2F6E9E;
+  --color-info-content: #F3F8FC;
+  --color-success: #2F7A4B;
+  --color-success-content: #F2FAF5;
+  --color-warning: #B7791F;
+  --color-warning-content: #1A2420;
+  --color-error: #B3412F;
+  --color-error-content: #FCF4F2;
+  --radius-selector: 999px;
+  --radius-field: 0.5rem;
+  --radius-box: 0.625rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
   --noise: 0;
+}
+
+@plugin "daisyui/packages/bundle/daisyui-theme" {
+  name: "dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: #17211E;
+  --color-base-200: #1E2A26;
+  --color-base-300: #2C3A35;
+  --color-base-content: #E4EAE6;
+  --color-primary: #4FB3A3;
+  --color-primary-content: #0F1A17;
+  --color-secondary: #B08CC6;
+  --color-secondary-content: #1A1220;
+  --color-accent: #E0AE48;
+  --color-accent-content: #17211E;
+  --color-neutral: #CBD5D0;
+  --color-neutral-content: #17211E;
+  --color-info: #6FA8D6;
+  --color-info-content: #0F1A22;
+  --color-success: #5DB37E;
+  --color-success-content: #0E1A13;
+  --color-warning: #E0AE48;
+  --color-warning-content: #17211E;
+  --color-error: #E07A66;
+  --color-error-content: #220F0B;
+  --radius-selector: 999px;
+  --radius-field: 0.5rem;
+  --radius-box: 0.625rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Type: Familjen Grotesk for interface and headings; Literata for
+   reading prose. Loaded in root.html.heex. */
+@theme {
+  --font-sans: "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Literata", ui-serif, Georgia, serif;
 }
 
 /* Add variants based on LiveView classes */
@@ -104,3 +112,31 @@
 [data-phx-session], [data-phx-teleported-src] { display: contents }
 
 /* This file is for your main application CSS */
+
+html {
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Timecodes and counts line up in columns. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* One deliberate motion: the timeline strip draws in once. */
+@keyframes topoi-strip-in {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.topoi-strip-band {
+  transform-origin: left center;
+  animation: topoi-strip-in 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topoi-strip-band {
+    animation: none;
+  }
+}

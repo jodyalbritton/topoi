@@ -5,13 +5,39 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title default="Topoi" suffix=" · JobyKit">
+    <.live_title default="Topoi" suffix=" | Topoi">
       {assigns[:page_title]}
     </.live_title>
+    <meta
+      name="description"
+      content={assigns[:page_description] || TopoiWeb.Layouts.default_description()}
+    />
+    <%!-- Social cards. Pages set :page_title / :page_description; a
+         per-page :og_image arrives with published pages (PRD §13). --%>
+    <meta property="og:site_name" content="Topoi" />
+    <meta property="og:type" content={assigns[:og_type] || "website"} />
+    <meta property="og:title" content={assigns[:page_title] || "Topoi"} />
+    <meta
+      property="og:description"
+      content={assigns[:page_description] || TopoiWeb.Layouts.default_description()}
+    />
+    <meta :if={assigns[:canonical_url]} property="og:url" content={@canonical_url} />
+    <link :if={assigns[:canonical_url]} rel="canonical" href={@canonical_url} />
+    <meta :if={assigns[:og_image]} property="og:image" content={@og_image} />
+    <meta
+      name="twitter:card"
+      content={if assigns[:og_image], do: "summary_large_image", else: "summary"}
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&display=swap"
+    />
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
     </script>
-    
+
     <script>
       (() => {
         const systemTheme = () =>
@@ -50,7 +76,7 @@
       })();
     </script>
   </head>
-  <body>
+  <body class="bg-base-100 text-base-content">
     {@inner_content}
   </body>
 </html>

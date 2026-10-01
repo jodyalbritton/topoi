@@ -28,19 +28,6 @@ defmodule TopoiWeb.DesignPreviews do
   alias JobyKit.CoreComponents
   alias TopoiWeb.CompositeComponents
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   def empty_state_preview(assigns) do
     ~H"""
     <div class="grid gap-4 sm:grid-cols-2">
@@ -61,4 +48,95 @@ defmodule TopoiWeb.DesignPreviews do
     """
   end
 
+  alias TopoiWeb.DebateComponents
+  alias TopoiWeb.SiteComponents
+
+  def wordmark_preview(assigns) do
+    ~H"""
+    <div class="flex items-center gap-6">
+      <SiteComponents.wordmark />
+      <SiteComponents.wordmark size="sm" />
+    </div>
+    """
+  end
+
+  def search_box_preview(assigns) do
+    ~H"""
+    <SiteComponents.search_box class="max-w-sm" />
+    """
+  end
+
+  def page_preview(assigns) do
+    ~H"""
+    <SiteComponents.page class="border border-dashed border-base-300">
+      Page content
+    </SiteComponents.page>
+    """
+  end
+
+  def prose_page_preview(assigns) do
+    ~H"""
+    <SiteComponents.prose_page title="About Topoi">
+      <p>A reference library of how public debaters argue.</p>
+    </SiteComponents.prose_page>
+    """
+  end
+
+  def empty_line_preview(assigns) do
+    ~H"""
+    <SiteComponents.empty_line>None published yet.</SiteComponents.empty_line>
+    """
+  end
+
+  def nav_link_preview(assigns) do
+    ~H"""
+    <div class="flex flex-wrap items-start gap-8">
+      <div class="flex gap-1">
+        <SiteComponents.nav_link navigate="#" active>Debaters</SiteComponents.nav_link>
+        <SiteComponents.nav_link navigate="#">Topics</SiteComponents.nav_link>
+      </div>
+      <div class="w-56 space-y-1">
+        <SiteComponents.nav_link navigate="#" variant="sidebar" icon="hero-home" active>
+          Overview
+        </SiteComponents.nav_link>
+        <SiteComponents.nav_link navigate="#" variant="sidebar" icon="hero-cpu-chip">
+          AI gateway
+        </SiteComponents.nav_link>
+      </div>
+    </div>
+    """
+  end
+
+  def timecode_preview(assigns) do
+    ~H"""
+    <div class="flex flex-wrap gap-1.5">
+      <DebateComponents.timecode ms={194_000} href="#" />
+      <DebateComponents.timecode ms={1_285_000} href="#" />
+      <DebateComponents.timecode ms={5_430_000} />
+    </div>
+    """
+  end
+
+  def timeline_strip_preview(assigns) do
+    ~H"""
+    <div class="max-w-lg space-y-6">
+      <DebateComponents.timeline_strip
+        duration_ms={3_360_000}
+        lanes={[
+          %{label: "Debater A", bands: [{55_000, 380_000}, {1_640_000, 2_190_000}], ticks: [349_000]},
+          %{label: "Debater B", bands: [{180_000, 360_000}, {2_200_000, 2_880_000}], ticks: []}
+        ]}
+      />
+      <DebateComponents.timeline_strip
+        size="sm"
+        labels={false}
+        duration_ms={3_360_000}
+        lanes={[
+          %{label: "Debater A", bands: [{55_000, 380_000}, {1_640_000, 2_190_000}]},
+          %{label: "Debater B", bands: [{180_000, 360_000}, {2_200_000, 2_880_000}]}
+        ]}
+      />
+    </div>
+    """
+  end
 end

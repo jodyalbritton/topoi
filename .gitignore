@@ -44,3 +44,6 @@ npm-debug.log
 
 # Hand-built dossiers (Milestone 1 gold set) stay local
 /docs/dossiers/
+
+# Local dev secrets
+/config/*.secret.exs

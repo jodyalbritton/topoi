@@ -40,6 +40,7 @@ defmodule Topoi.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bcrypt_elixir, "~> 3.0"},
       {:tidewave, "~> 0.9", only: [:dev]},
       {:joby_kit, "~> 0.3"},
       {:phoenix, "~> 1.8.13"},
